@@ -1,0 +1,40 @@
+import os
+import stat
+import time
+
+def file_info(filename):
+    if os.path.exists(filename):
+        print(f"File '{filename}' exists.")
+
+        # Check if it's a regular file
+        if os.path.isfile(filename):
+            print(f"File type: Regular File")
+            
+            # Display access permissions
+            permissions = stat.filemode(os.stat(filename).st_mode)
+            print(f"Access permissions: {permissions}")
+
+            # Display size
+            size = os.path.getsize(filename)
+            print(f"Size: {size} bytes")
+
+            # Display last modification time
+            modification_time = time.ctime(os.path.getmtime(filename))
+            print(f"Last Modification Time: {modification_time}")
+
+        # Check if it's a directory
+        elif os.path.isdir(filename):
+            print(f"File type: Directory")
+            
+            # Display the number of files and subdirectories
+            num_files = sum(1 for _ in os.scandir(filename) if _.is_file())
+            num_subdirectories = sum(1 for _ in os.scandir(filename) if _.is_dir())
+            print(f"Number of files: {num_files}")
+            print(f"Number of subdirectories: {num_subdirectories}")
+
+    else:
+        print(f"File '{filename}' does not exist.")
+
+# Get filename from user input
+filename = input("Enter the filename: ")
+file_info(filename)
