@@ -1,0 +1,97 @@
+#!/bin/bash
+
+# Check if the number of command line arguments is correct
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <positive_integer>"
+    exit 1
+fi
+
+# Check if the command line argument is a positive integer
+if ! [[ "$1" =~ ^[1-9][0-9]*$ ]]; then
+    echo "Error: Please provide a positive integer as a command line argument."
+    exit 1
+fi
+
+# Function to calculate the sum of digits
+sum_of_digits() {
+    local num=$1
+    local sum=0
+    while [ "$num" -gt 0 ]; do
+        sum=$((sum + num % 10))
+        num=$((num / 10))
+    done
+    echo $sum
+}
+
+# Function to calculate the product of digits
+product_of_digits() {
+    local num=$1
+    local product=1
+    while [ "$num" -gt 0 ]; do
+        product=$((product * num % 10))
+        num=$((num / 10))
+    done
+    echo $product
+}
+
+# Function to check if a number is a palindrome
+is_palindrome() {
+    local num=$1
+    local reversed=$(echo "$num" | rev)
+    [ "$num" -eq "$reversed" ]
+}
+
+# Function to check if a number is prime
+is_prime() {
+    local num=$1
+    if [ "$num" -le 1 ]; then
+        return 1
+    fi
+    for ((i = 2; i * i <= num; i++)); do
+        if [ "$((num % i))" -eq 0 ]; then
+            return 1
+        fi
+    done
+    return 0
+}
+
+# Main script
+
+number=$1
+
+# Prompt user for choice
+echo "Choose an option:"
+echo "1. Display the sum and product of the digits of the number"
+echo "2. Display whether the number is a palindrome or not"
+echo "3. Display whether the number is prime or not"
+
+read -p "Enter your choice (1/2/3): " choice
+
+case $choice in
+    1)
+        sum=$(sum_of_digits $number)
+        product=$(product_of_digits $number)
+        echo "Sum of digits: $sum"
+        echo "Product of digits: $product"
+        ;;
+    2)
+        if is_palindrome $number; then
+            echo "The number is a palindrome."
+        else
+            echo "The number is not a palindrome."
+        fi
+        ;;
+    3)
+        if is_prime $number; then
+            echo "The number is prime."
+        else
+            echo "The number is not prime."
+        fi
+        ;;
+    *)
+        echo "Invalid choice. Please enter 1, 2, or 3."
+        exit 1
+        ;;
+esac
+
+exit 0
